@@ -25,6 +25,13 @@ const database = mysql.createConnection(
   console.log("Connected to the election Database")
 );
 
+//query and select all items from candidates
+database.query("SELECT * FROM candidates", (err, rows) => {
+  //   console.log(rows[5].first_name);
+  console.log(rows);
+  rows.forEach((item) => console.log(item.first_name));
+});
+
 //default response for not found -> CATCH ALL
 app.use((req, res) => {
   res.status(404).end();
