@@ -123,7 +123,7 @@ app.get("/api/candidates", (req, res) => {
 });
 
 //get a single candidate
-app.get("/api/candidates/:id", (req, res) => {
+app.get("/api/candidate/:id", (req, res) => {
   // const sql = `SELECT *  FROM candidates WHERE id =?`;
 
   const sql = `SELECT candidates.*, parties.name 
