@@ -144,6 +144,86 @@ app.get("/api/candidates/:id", (req, res) => {
   });
 });
 
+//get all parties route
+app.get("/api/parties", (req, res) => {
+  const sql = `SELECT * FROM parties`;
+
+  database.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error });
+      return;
+    }
+    res.json({ message: "success", data: rows });
+  });
+});
+
+//get party by id route
+app.get("/api/party/:id", (req, res) => {
+  const sql = `SELECT * FROM parties WHERE id = ?`;
+  const params = [req.params.id];
+  database.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
+});
+
+app.put("/api/candidate/:id", (req, res) => {
+  const errors = inputCheck(req.body, "party_id");
+
+  if (errors) {
+    res.status(400).json({ error: errors });
+    return;
+  }
+  const sql = `UPDATE candidates SET party_id = ? 
+               WHERE id = ?`;
+  const params = [req.body.party_id, req.params.id];
+  database.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      // check if a record was found
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Candidate not found",
+      });
+    } else {
+      res.json({
+        message: "success",
+        data: req.body,
+        changes: result.affectedRows,
+      });
+    }
+  });
+});
+
+app.delete("/api/party/:id", (req, res) => {
+  const sql = "DELETE FROM parties WHERE id = ?";
+  const params = [req.params.id];
+
+  database.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: res.message });
+
+      //checks if anything was actually deleted
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Party not found!",
+      });
+    } else {
+      res.json({
+        message: "deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
+      });
+    }
+  });
+});
+
 // //default response for not found -> CATCH ALL
 
 // app.use((req, res) => {
