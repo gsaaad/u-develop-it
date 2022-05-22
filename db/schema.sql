@@ -3,6 +3,7 @@
 DROP TABLE IF EXISTS candidates;
 DROP TABLE IF EXISTS parties;
 DROP TABLE IF EXISTS voters;
+DROP TABLES IF EXISTS votes;
 
 /* creating a table for cadidates, id is auto incremented, has category for first/last name 30 characters long, industry - connected */
 
@@ -33,4 +34,16 @@ CREATE TABLE voters (
     last_name VARCHAR(30)  NOT NULL,
     email VARCHAR(50) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-)
+);
+
+/* CREATE VOTES TABLES */
+
+CREATE TABLE votes (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  voter_id INTEGER NOT NULL,
+  candidate_id INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT uc_voter UNIQUE (voter_id),
+  CONSTRAINT fk_voter FOREIGN KEY (voter_id) REFERENCES voters(id) ON DELETE CASCADE,
+  CONSTRAINT fk_candidate FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
+);
